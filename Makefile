@@ -3,8 +3,10 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
+DATABASE_URL=postgres://${POSTGRES_NAME}:${POSTGRES_PASSWORD}@localhost:5432/tx_system?sslmode=disable
+
 postgres:
-	docker run --name postgres -p 5432:5432 -e POSTGRES_USER=${POSTGRES_NAME} -e POSTGRES_PASSWORD=${POSTGRES_PASSWD} -d postgres:latest
+	docker run --name postgres -p 5432:5432 -e POSTGRES_USER=${POSTGRES_NAME} -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} -d postgres:latest
 
 createdb:
 	docker exec -it postgres createdb --username=postgres --owner=postgres tx_system
