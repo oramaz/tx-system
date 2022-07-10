@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: ['main']
 
+env:
+  POSTGRES_NAME: postgres
+  POSTGRES_PASSWORD: postgres
+
 jobs:
   test:
     name: Test
