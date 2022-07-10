@@ -1,7 +1,5 @@
-ifneq (,$(wildcard .env))
-    include .env
-    export
-endif
+include .env
+export
 
 DATABASE_URL=postgres://${POSTGRES_NAME}:${POSTGRES_PASSWORD}@localhost:5432/tx_system?sslmode=disable
 
