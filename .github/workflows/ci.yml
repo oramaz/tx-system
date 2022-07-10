@@ -32,6 +32,9 @@ jobs:
           echo POSTGRES_PASSWORD=postgres >> .env
           cat .env
 
+          echo "ls -a ."
+          ls -a .
+
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
 
