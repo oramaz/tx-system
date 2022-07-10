@@ -15,7 +15,7 @@ jobs:
         image: postgres:14
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWD: postgres
+          POSTGRES_PASSWORD: postgres
           POSTGRES_DB: tx_system
         ports:
           - 5432:5432
