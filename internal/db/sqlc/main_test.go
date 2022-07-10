@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -28,7 +29,10 @@ func init() {
 func TestMain(m *testing.M) {
 	var err error
 
-	testDB, err = sql.Open(dbDriver, os.Getenv("DATABASE_URL"))
+	testDB, err = sql.Open(
+		dbDriver, fmt.Sprintf("postgres://%s:%s@localhost:5432/tx_system?sslmode=disable",
+			os.Getenv("POSTGRES_NAME"), os.Getenv("POSTGRES_PASSWORD")),
+	)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
