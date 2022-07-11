@@ -12,10 +12,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	dbDriver = "postgres"
-)
-
 var testQueries *Queries
 var testDB *sql.DB
 
@@ -30,7 +26,7 @@ func TestMain(m *testing.M) {
 	var err error
 
 	testDB, err = sql.Open(
-		dbDriver, fmt.Sprintf("postgres://%s:%s@localhost:5432/tx_system?sslmode=disable",
+		"postgres", fmt.Sprintf("postgres://%s:%s@localhost:5432/tx_system?sslmode=disable",
 			os.Getenv("POSTGRES_NAME"), os.Getenv("POSTGRES_PASSWORD")),
 	)
 	if err != nil {
