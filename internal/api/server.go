@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	db "github.com/oramaz/tx-system/internal/db/sqlc"
 )
 
@@ -17,6 +18,8 @@ func (server *Server) Start(address string) error {
 func NewServer(st db.Store) *Server {
 	s := &Server{store: st}
 	r := fiber.New()
+
+	r.Use(logger.New())
 
 	r.Post("/accounts", s.createAccount)
 	r.Get("/accounts/:id", s.getAccount)
