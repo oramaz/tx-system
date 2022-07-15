@@ -33,7 +33,8 @@ jobs:
           touch .env
           echo POSTGRES_NAME=postgres >> .env
           echo POSTGRES_PASSWORD=postgres >> .env
-          echo DATABASE_URL=postgres://${POSTGRES_NAME}:${POSTGRES_PASSWORD}@localhost:5432/tx_system?sslmode=disable >> .env
+          echo DATABASE_URL=postgres://postgres:postgres@localhost:5432/tx_system?sslmode=disable >> .env
+          echo SERVER_ADDRESS=0.0.0.0:8080 >> .env
           cat .env
 
       - name: Set up Go
