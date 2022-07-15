@@ -6,7 +6,7 @@ import (
 )
 
 type Server struct {
-	store  *db.Store
+	store  db.Store
 	router *fiber.App
 }
 
@@ -14,11 +14,12 @@ func (server *Server) Start(address string) error {
 	return server.router.Listen(address)
 }
 
-func NewServer(st *db.Store) *Server {
+func NewServer(st db.Store) *Server {
 	s := &Server{store: st}
 	r := fiber.New()
 
 	r.Post("/accounts", s.createAccount)
+	r.Get("/accounts/:id", s.getAccount)
 
 	s.router = r
 
@@ -27,6 +28,6 @@ func NewServer(st *db.Store) *Server {
 
 func errorResponse(err error) *fiber.Map {
 	return &fiber.Map{
-		"message": err.Error(),
+		"error": err.Error(),
 	}
 }

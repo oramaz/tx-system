@@ -2,12 +2,11 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 	"testing"
 
-	"github.com/joho/godotenv"
+	"github.com/oramaz/tx-system/internal/util"
 
 	_ "github.com/lib/pq"
 )
@@ -15,19 +14,14 @@ import (
 var testQueries *Queries
 var testDB *sql.DB
 
-func init() {
-	err := godotenv.Load("../../../.env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-}
-
 func TestMain(m *testing.M) {
-	var err error
+	config, err := util.LoadConfig("../../../.env")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
 
 	testDB, err = sql.Open(
-		"postgres", fmt.Sprintf("postgres://%s:%s@localhost:5432/tx_system?sslmode=disable",
-			os.Getenv("POSTGRES_NAME"), os.Getenv("POSTGRES_PASSWORD")),
+		"postgres", config.DatabaseURL,
 	)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)

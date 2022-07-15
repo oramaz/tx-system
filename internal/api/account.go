@@ -1,6 +1,8 @@
 package api
 
 import (
+	"database/sql"
+
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofiber/fiber/v2"
 	db "github.com/oramaz/tx-system/internal/db/sqlc"
@@ -16,11 +18,21 @@ func (r *createAccountRequest) validate() error {
 	)
 }
 
+type getAccountRequest struct {
+	ID int64 `json:"id" `
+}
+
+func (r *getAccountRequest) validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ID, validation.Required, validation.Min(1)),
+	)
+}
+
 func (s *Server) createAccount(c *fiber.Ctx) error {
-	req := new(createAccountRequest)
+	var req createAccountRequest
 
 	// Parse request body to struct
-	if err := c.BodyParser(req); err != nil {
+	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(errorResponse(err))
 	}
 
@@ -37,6 +49,30 @@ func (s *Server) createAccount(c *fiber.Ctx) error {
 	account, err := s.store.CreateAccount(c.Context(), arg)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(errorResponse(err))
+	}
+
+	return c.Status(fiber.StatusOK).JSON(account)
+}
+
+func (s *Server) getAccount(c *fiber.Ctx) error {
+	var req getAccountRequest
+
+	// Parse request body to struct
+	c.ParamsParser(&req)
+
+	// Validate the struct
+	if err := req.validate(); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errorResponse(err))
+	}
+
+	account, err := s.store.GetAccount(c.Context(), req.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return c.Status(fiber.StatusNotFound).JSON(errorResponse(err))
+		}
+
+		return c.Status(fiber.StatusInternalServerError).JSON(errorResponse(err))
+
 	}
 
 	return c.Status(fiber.StatusOK).JSON(account)

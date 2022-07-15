@@ -1,8 +1,6 @@
 include .env
 export
 
-DATABASE_URL=postgres://${POSTGRES_NAME}:${POSTGRES_PASSWORD}@localhost:5432/tx_system?sslmode=disable
-
 postgres:
 	docker run --name postgres -p 5432:5432 -e POSTGRES_USER=${POSTGRES_NAME} -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} -d postgres:latest
 
@@ -27,4 +25,7 @@ test:
 server:
 	go run cmd/main.go
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server
+mock:
+	mockgen -package mockdb -destination ./internal/db/mock/store.go github.com/oramaz/tx-system/internal/db/sqlc Store
+
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server mock
