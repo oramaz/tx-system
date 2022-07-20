@@ -10,11 +10,17 @@ createdb:
 dropdb:
 	docker exec -it postgres dropdb --username=postgres tx_system
 
-migrateup: 
+migrateup:
 	migrate -path ./internal/db/migration -database "${DATABASE_URL}" -verbose up
 
-migratedown: 
+migratedown:
 	migrate -path ./internal/db/migration -database "${DATABASE_URL}" -verbose down
+
+migrateup1:
+	migrate -path ./internal/db/migration -database "${DATABASE_URL}" -verbose up 1
+
+migratedown1:
+	migrate -path ./internal/db/migration -database "${DATABASE_URL}" -verbose down 1
 
 sqlc:
 	sqlc generate
@@ -28,4 +34,4 @@ server:
 mock:
 	mockgen -package mockdb -destination ./internal/db/mock/store.go github.com/oramaz/tx-system/internal/db/sqlc Store
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server mock
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown1 sqlc test server mock
