@@ -9,17 +9,17 @@ import (
 )
 
 type createAccountRequest struct {
-	Owner string `json:"owner" `
+	Owner string `json:"owner"`
 }
 
 func (r *createAccountRequest) validate() error {
 	return validation.ValidateStruct(r,
-		validation.Field(&r.Owner, validation.Required),
+		validation.Field(&r.Owner, validation.Required, validation.Length(2, 0)),
 	)
 }
 
 type getAccountRequest struct {
-	ID int64 `json:"id" `
+	ID int64 `json:"id"`
 }
 
 func (r *getAccountRequest) validate() error {
@@ -57,7 +57,7 @@ func (s *Server) createAccount(c *fiber.Ctx) error {
 func (s *Server) getAccount(c *fiber.Ctx) error {
 	var req getAccountRequest
 
-	// Parse request body to struct
+	// Parse request params to struct
 	c.ParamsParser(&req)
 
 	// Validate the struct
