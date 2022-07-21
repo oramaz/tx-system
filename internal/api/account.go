@@ -19,16 +19,6 @@ func (r *createAccountRequest) validate() error {
 	)
 }
 
-type getAccountRequest struct {
-	ID int64 `json:"id"`
-}
-
-func (r *getAccountRequest) validate() error {
-	return validation.ValidateStruct(r,
-		validation.Field(&r.ID, validation.Required, validation.Min(1)),
-	)
-}
-
 func (s *Server) createAccount(c *fiber.Ctx) error {
 	var req createAccountRequest
 
@@ -59,6 +49,16 @@ func (s *Server) createAccount(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(account)
+}
+
+type getAccountRequest struct {
+	ID int64 `json:"id"`
+}
+
+func (r *getAccountRequest) validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ID, validation.Required, validation.Min(1)),
+	)
 }
 
 func (s *Server) getAccount(c *fiber.Ctx) error {
