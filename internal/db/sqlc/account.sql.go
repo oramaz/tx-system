@@ -92,6 +92,18 @@ func (q *Queries) GetAccountForUpdate(ctx context.Context, id int64) (Account, e
 	return i, err
 }
 
+const getBalance = `-- name: GetBalance :one
+SELECT balance FROM accounts
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetBalance(ctx context.Context, id int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getBalance, id)
+	var balance int64
+	err := row.Scan(&balance)
+	return balance, err
+}
+
 const updateAccount = `-- name: UpdateAccount :one
 UPDATE accounts
 SET balance = $2

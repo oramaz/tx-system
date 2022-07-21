@@ -21,9 +21,9 @@ func NewServer(st db.Store) *Server {
 
 	r.Use(logger.New())
 
+	r.Post("/users", s.createUser)
 	r.Post("/accounts", s.createAccount)
 	r.Get("/accounts/:id", s.getAccount)
-
 	r.Post("/transfers", s.createTransfer)
 
 	s.router = r

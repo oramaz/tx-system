@@ -48,6 +48,22 @@ func TestTransferAPI(t *testing.T) {
 			},
 		},
 		{
+			name: "TransferTxError",
+			body: transferRequest{
+				FromAccountID: account1.ID,
+				ToAccountID:   account2.ID,
+				Amount:        amount,
+			},
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					TransferTx(gomock.Any(), gomock.Any()).
+					Times(1).Return(db.TransferTxResult{}, sql.ErrTxDone)
+			},
+			checkResponse: func(t *testing.T, resp *http.Response) {
+				require.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+			},
+		},
+		{
 			name: "NegativeAmount",
 			body: transferRequest{
 				FromAccountID: account1.ID,
@@ -64,19 +80,35 @@ func TestTransferAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "TransferTxError",
+			name: "InvalidFromAccountID",
 			body: transferRequest{
-				FromAccountID: account1.ID,
+				FromAccountID: 0,
 				ToAccountID:   account2.ID,
-				Amount:        amount,
+				Amount:        -amount,
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					TransferTx(gomock.Any(), gomock.Any()).
-					Times(1).Return(db.TransferTxResult{}, sql.ErrTxDone)
+					Times(0)
 			},
 			checkResponse: func(t *testing.T, resp *http.Response) {
-				require.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+				require.Equal(t, http.StatusBadRequest, resp.StatusCode)
+			},
+		},
+		{
+			name: "InvalidToAccountID",
+			body: transferRequest{
+				FromAccountID: account1.ID,
+				ToAccountID:   0,
+				Amount:        -amount,
+			},
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					TransferTx(gomock.Any(), gomock.Any()).
+					Times(0)
+			},
+			checkResponse: func(t *testing.T, resp *http.Response) {
+				require.Equal(t, http.StatusBadRequest, resp.StatusCode)
 			},
 		},
 	}

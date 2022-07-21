@@ -108,7 +108,6 @@ func TestGetAccountAPI(t *testing.T) {
 
 func TestCreateAccountAPI(t *testing.T) {
 	account := randomAccount()
-	account.Owner = "oramaz"
 
 	testCases := []struct {
 		name          string

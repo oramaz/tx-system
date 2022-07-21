@@ -5,6 +5,7 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofiber/fiber/v2"
+	"github.com/lib/pq"
 	db "github.com/oramaz/tx-system/internal/db/sqlc"
 )
 
@@ -48,6 +49,12 @@ func (s *Server) createAccount(c *fiber.Ctx) error {
 
 	account, err := s.store.CreateAccount(c.Context(), arg)
 	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok {
+			switch pqErr.Code.Name() {
+			case "foreign_key_violation":
+				return c.Status(fiber.StatusForbidden).JSON(errorResponse(err))
+			}
+		}
 		return c.Status(fiber.StatusInternalServerError).JSON(errorResponse(err))
 	}
 

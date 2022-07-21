@@ -15,6 +15,10 @@ SELECT * FROM accounts
 WHERE id = $1 LIMIT 1
 FOR NO KEY UPDATE;
 
+-- name: GetBalance :one
+SELECT balance FROM accounts
+WHERE id = $1 LIMIT 1;
+
 -- name: UpdateAccount :one
 UPDATE accounts
 SET balance = $2

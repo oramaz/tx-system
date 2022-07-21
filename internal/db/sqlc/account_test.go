@@ -67,3 +67,13 @@ func TestUpdateAccount(t *testing.T) {
 	require.WithinDuration(t, account1.CreatedAt, account2.CreatedAt, time.Second)
 
 }
+
+func TestGetBalance(t *testing.T) {
+	account := createRandomAccount(t)
+
+	balance, err := testQueries.GetBalance(context.Background(), account.ID)
+	require.NoError(t, err)
+	require.NotZero(t, balance)
+
+	require.Equal(t, account.Balance, balance)
+}
